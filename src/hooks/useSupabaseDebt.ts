@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { Debtor } from '../types/debt';
 
 // Dummy user ID untuk testing tanpa authentication
-const DUMMY_USER_ID = '00000000-0000-0000-0000-000000000000';
+const DUMMY_USER_ID = 'default_user';
 
 export const useSupabaseDebt = () => {
   const [debtors, setDebtors] = useState<Debtor[]>([]);
