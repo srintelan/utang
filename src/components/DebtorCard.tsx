@@ -210,6 +210,7 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
                       <div>
                         <p className="font-medium text-gray-800">{debt.description}</p>
                         <p className="text-red-600 font-semibold">{formatCurrency(debt.amount)}</p>
+                        <p className="text-xs text-red-600">{formatDate(debt.created_at)}</p>
                       </div>
                       <button
                         onClick={() => onDeleteDebt(debtor.id, debt.id)}
