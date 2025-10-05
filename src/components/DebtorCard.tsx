@@ -206,20 +206,19 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
               ) : (
                 <div className="space-y-2">
                   {debtor.debts.map((debt) => (
-  <div key={debt.id} className="flex justify-between items-center bg-red-50 p-2 rounded text-sm">
-    <div>
-      <p className="font-medium text-gray-800">{debt.description}</p>
-      <p className="text-red-600 font-semibold">{formatCurrency(debt.amount)}</p>
-      
-    </div>
-    <button
-      onClick={() => onDeleteDebt(debtor.id, debt.id)}
-      className="text-red-500 hover:text-red-700"
-    >
-      <Trash2 size={16} />
-    </button>
-  </div>
-))}
+                    <div key={debt.id} className="flex justify-between items-center bg-red-50 p-2 rounded text-sm">
+                      <div>
+                        <p className="font-medium text-gray-800">{debt.description}</p>
+                        <p className="text-red-600 font-semibold">{formatCurrency(debt.amount)}</p>
+                      </div>
+                      <button
+                        onClick={() => onDeleteDebt(debtor.id, debt.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
