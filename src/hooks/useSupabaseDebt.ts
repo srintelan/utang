@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Debtor } from '../types/debt';
 
+// Dummy user ID untuk testing tanpa authentication
+const DUMMY_USER_ID = '00000000-0000-0000-0000-000000000000';
+
 export const useSupabaseDebt = () => {
   const [debtors, setDebtors] = useState<Debtor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,13 +57,13 @@ export const useSupabaseDebt = () => {
           .map(debt => ({
             id: debt.id,
             description: debt.description,
-            amount: debt.amount,
+            amount: Number(debt.amount),
           })),
         payments: (paymentsData || [])
           .filter(payment => payment.debtor_id === debtor.id)
           .map(payment => ({
             id: payment.id,
-            amount: payment.amount,
+            amount: Number(payment.amount),
             date: payment.date,
             notes: payment.notes || undefined,
           })),
@@ -69,7 +72,7 @@ export const useSupabaseDebt = () => {
       setDebtors(combinedDebtors);
     } catch (err) {
       console.error('Error fetching debtors:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
     } finally {
       setLoading(false);
     }
@@ -81,22 +84,15 @@ export const useSupabaseDebt = () => {
 
   const addDebtor = async (name: string) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        setError('User not authenticated');
-        return;
-      }
-
       const { error } = await supabase
         .from('debtors')
-        .insert([{ name, user_id: user.id }]);
+        .insert([{ name, user_id: DUMMY_USER_ID }]);
 
       if (error) throw error;
       await fetchDebtors();
     } catch (err) {
       console.error('Error adding debtor:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
     }
   };
 
@@ -110,7 +106,7 @@ export const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error adding debt:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
     }
   };
 
@@ -129,7 +125,7 @@ export const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error adding payment:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
     }
   };
 
@@ -144,11 +140,11 @@ export const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error deleting debtor:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
     }
   };
 
-  const deleteDebt = async (debtorId: string, debtId: string) => {
+  const deleteDebt = async (_debtorId: string, debtId: string) => {
     try {
       const { error } = await supabase
         .from('debts')
@@ -159,11 +155,11 @@ export const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error deleting debt:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
     }
   };
 
-  const deletePayment = async (debtorId: string, paymentId: string) => {
+  const deletePayment = async (_debtorId: string, paymentId: string) => {
     try {
       const { error } = await supabase
         .from('payments')
@@ -174,7 +170,7 @@ export const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error deleting payment:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
     }
   };
 

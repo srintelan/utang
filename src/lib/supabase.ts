@@ -1,13 +1,19 @@
 // src/lib/supabase.ts
 import { createClient } from '@supabase/supabase-js';
 
-// Ganti dengan URL dan Anon Key Supabase Anda
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://iivfobacquzfbxesxffn.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdmZvYmFjcXV6ZmJ4ZXN4ZmZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NjkxMTksImV4cCI6MjA3NTI0NTExOX0.romQs2uPwVBlUqnLua5GxhjGmYowaxHWMR-9mg1l0XY';
+// Ganti dengan credentials Supabase Anda
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+// Validasi credentials
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('⚠️ Supabase credentials tidak ditemukan!');
+  console.error('Pastikan file .env sudah dibuat dengan VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY');
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Type definitions
+// Type definitions untuk TypeScript
 export interface Database {
   public: {
     Tables: {
