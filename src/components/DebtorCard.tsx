@@ -46,6 +46,17 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
     }
   };
 
+  // Helper function untuk format tanggal dengan fallback
+  const safeFormatDate = (dateString: string | undefined | null): string => {
+    if (!dateString) return 'Tanggal tidak tersedia';
+    try {
+      return formatDateLong(dateString);
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Format tanggal tidak valid';
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
       <div className="p-4">
@@ -192,7 +203,7 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
           ) : (
             <>
               <ChevronDown size={18} />
-              Lihat Detail ({debtor.debts.length} hutang, {debtor.payments.length} pembayaran)
+              Lihat Detail ({debtor.debts?.length || 0} hutang, {debtor.payments?.length || 0} pembayaran)
             </>
           )}
         </button>
@@ -201,7 +212,7 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
           <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
             <div>
               <h4 className="font-semibold text-sm text-gray-700 mb-2">Daftar Hutang:</h4>
-              {debtor.debts.length === 0 ? (
+              {!debtor.debts || debtor.debts.length === 0 ? (
                 <p className="text-sm text-gray-500 italic">Belum ada hutang</p>
               ) : (
                 <div className="space-y-2">
@@ -209,8 +220,8 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
                     <div key={debt.id} className="bg-red-50 p-3 rounded border border-red-100">
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1">
-                          <p className="font-medium text-gray-800">{debt.description}</p>
-                          <p className="text-red-600 font-semibold text-lg">{formatCurrency(debt.amount)}</p>
+                          <p className="font-medium text-gray-800">{debt.description || 'Tanpa deskripsi'}</p>
+                          <p className="text-red-600 font-semibold text-lg">{formatCurrency(debt.amount || 0)}</p>
                         </div>
                         <button
                           onClick={() => onDeleteDebt(debtor.id, debt.id)}
@@ -219,10 +230,12 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
                           <Trash2 size={16} />
                         </button>
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-gray-600">
-                        <Calendar size={12} />
-                        <span>{formatDateLong(debt.date)}</span>
-                      </div>
+                      {debt.date && (
+                        <div className="flex items-center gap-1 text-xs text-gray-600">
+                          <Calendar size={12} />
+                          <span>{safeFormatDate(debt.date)}</span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -231,7 +244,7 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
 
             <div>
               <h4 className="font-semibold text-sm text-gray-700 mb-2">Riwayat Pembayaran:</h4>
-              {debtor.payments.length === 0 ? (
+              {!debtor.payments || debtor.payments.length === 0 ? (
                 <p className="text-sm text-gray-500 italic">Belum ada pembayaran</p>
               ) : (
                 <div className="space-y-2">
@@ -239,7 +252,7 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
                     <div key={payment.id} className="bg-green-50 p-3 rounded border border-green-100">
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1">
-                          <p className="text-green-600 font-semibold text-lg">{formatCurrency(payment.amount)}</p>
+                          <p className="text-green-600 font-semibold text-lg">{formatCurrency(payment.amount || 0)}</p>
                           {payment.notes && <p className="text-xs text-gray-600 italic mt-1">{payment.notes}</p>}
                         </div>
                         <button
@@ -249,10 +262,12 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
                           <Trash2 size={16} />
                         </button>
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-gray-600">
-                        <Calendar size={12} />
-                        <span>{formatDateLong(payment.date)}</span>
-                      </div>
+                      {payment.date && (
+                        <div className="flex items-center gap-1 text-xs text-gray-600">
+                          <Calendar size={12} />
+                          <span>{safeFormatDate(payment.date)}</span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
