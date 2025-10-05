@@ -1,18 +1,18 @@
-const DebtorCard = ({ 
-  debtor, 
-  onAddDebt, 
-  onAddPayment, 
-  onDeleteDebtor, 
-  onDeleteDebt, 
-  onDeletePayment 
-}: {
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, Trash2, Plus } from 'lucide-react';
+import { Debtor } from '../types/debt';
+import { calculateTotalDebt, calculateTotalPayments, calculateRemainingDebt, calculatePaymentPercentage, formatCurrency, formatDate } from '../utils/calculations';
+
+interface DebtorCardProps {
   debtor: Debtor;
   onAddDebt: (debtorId: string, description: string, amount: number) => void;
   onAddPayment: (debtorId: string, amount: number, notes?: string) => void;
   onDeleteDebtor: (debtorId: string) => void;
   onDeleteDebt: (debtorId: string, debtId: string) => void;
   onDeletePayment: (debtorId: string, paymentId: string) => void;
-}) => {
+}
+
+export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, onDeleteDebt, onDeletePayment }: DebtorCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDebtForm, setShowDebtForm] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
@@ -181,4 +181,75 @@ const DebtorCard = ({
         )}
 
         <button
-          onClick={() => setIsE
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full flex items-center justify-center gap-2 py-2 text-sm text-blue-600 hover:text-blue-800 transition-colors"
+        >
+          {isExpanded ? (
+            <>
+              <ChevronUp size={18} />
+              Sembunyikan Detail
+            </>
+          ) : (
+            <>
+              <ChevronDown size={18} />
+              Lihat Detail ({debtor.debts.length} hutang, {debtor.payments.length} pembayaran)
+            </>
+          )}
+        </button>
+
+        {isExpanded && (
+          <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
+            <div>
+              <h4 className="font-semibold text-sm text-gray-700 mb-2">Daftar Hutang:</h4>
+              {debtor.debts.length === 0 ? (
+                <p className="text-sm text-gray-500 italic">Belum ada hutang</p>
+              ) : (
+                <div className="space-y-2">
+                  {debtor.debts.map((debt) => (
+                    <div key={debt.id} className="flex justify-between items-center bg-red-50 p-2 rounded text-sm">
+                      <div>
+                        <p className="font-medium text-gray-800">{debt.description}</p>
+                        <p className="text-red-600 font-semibold">{formatCurrency(debt.amount)}</p>
+                      </div>
+                      <button
+                        onClick={() => onDeleteDebt(debtor.id, debt.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-sm text-gray-700 mb-2">Riwayat Pembayaran:</h4>
+              {debtor.payments.length === 0 ? (
+                <p className="text-sm text-gray-500 italic">Belum ada pembayaran</p>
+              ) : (
+                <div className="space-y-2">
+                  {debtor.payments.map((payment) => (
+                    <div key={payment.id} className="flex justify-between items-center bg-green-50 p-2 rounded text-sm">
+                      <div>
+                        <p className="text-green-600 font-semibold">{formatCurrency(payment.amount)}</p>
+                        <p className="text-xs text-gray-600">{formatDate(payment.date)}</p>
+                        {payment.notes && <p className="text-xs text-gray-500 italic">{payment.notes}</p>}
+                      </div>
+                      <button
+                        onClick={() => onDeletePayment(debtor.id, payment.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
