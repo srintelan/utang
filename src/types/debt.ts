@@ -2,6 +2,7 @@ export interface Debt {
   id: string;
   description: string;
   amount: number;
+  date: string; // Tambahkan field date
 }
 
 export interface Payment {
