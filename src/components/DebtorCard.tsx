@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Trash2, Plus, Calendar } from 'lucide-react';
 import { Debtor } from '../types/debt';
-import { calculateTotalDebt, calculateTotalPayments, calculateRemainingDebt, calculatePaymentPercentage, formatCurrency, formatDate, formatDateLong } from '../utils/calculations';
+import { calculateTotalDebt, calculateTotalPayments, calculateRemainingDebt, calculatePaymentPercentage, formatCurrency, formatDateLong } from '../utils/calculations';
 
 interface DebtorCardProps {
   debtor: Debtor;
