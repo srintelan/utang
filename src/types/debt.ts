@@ -1,17 +1,18 @@
-export interface Debt {
+interface Debt {
   id: string;
   description: string;
   amount: number;
+  createdAt: string;
 }
 
-export interface Payment {
+interface Payment {
   id: string;
   amount: number;
   date: string;
   notes?: string;
 }
 
-export interface Debtor {
+interface Debtor {
   id: string;
   name: string;
   debts: Debt[];
