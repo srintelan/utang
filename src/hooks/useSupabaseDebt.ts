@@ -1,13 +1,20 @@
-const useSupabaseDebt = () => {
+// src/hooks/useSupabaseDebt.ts
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { Debtor } from '../types/debt';
+
+export const useSupabaseDebt = () => {
   const [debtors, setDebtors] = useState<Debtor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch all debtors with their debts and payments
   const fetchDebtors = async () => {
     try {
       setLoading(true);
       setError(null);
 
+      // Fetch debtors
       const { data: debtorsData, error: debtorsError } = await supabase
         .from('debtors')
         .select('*')
@@ -21,6 +28,7 @@ const useSupabaseDebt = () => {
         return;
       }
 
+      // Fetch all debts
       const { data: debtsData, error: debtsError } = await supabase
         .from('debts')
         .select('*')
@@ -28,6 +36,7 @@ const useSupabaseDebt = () => {
 
       if (debtsError) throw debtsError;
 
+      // Fetch all payments
       const { data: paymentsData, error: paymentsError } = await supabase
         .from('payments')
         .select('*')
@@ -35,6 +44,7 @@ const useSupabaseDebt = () => {
 
       if (paymentsError) throw paymentsError;
 
+      // Combine data
       const combinedDebtors: Debtor[] = debtorsData.map(debtor => ({
         id: debtor.id,
         name: debtor.name,
@@ -44,14 +54,13 @@ const useSupabaseDebt = () => {
           .map(debt => ({
             id: debt.id,
             description: debt.description,
-            amount: Number(debt.amount),
-            createdAt: debt.created_at,
+            amount: debt.amount,
           })),
         payments: (paymentsData || [])
           .filter(payment => payment.debtor_id === debtor.id)
           .map(payment => ({
             id: payment.id,
-            amount: Number(payment.amount),
+            amount: payment.amount,
             date: payment.date,
             notes: payment.notes || undefined,
           })),
@@ -60,7 +69,7 @@ const useSupabaseDebt = () => {
       setDebtors(combinedDebtors);
     } catch (err) {
       console.error('Error fetching debtors:', err);
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -72,15 +81,22 @@ const useSupabaseDebt = () => {
 
   const addDebtor = async (name: string) => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        setError('User not authenticated');
+        return;
+      }
+
       const { error } = await supabase
         .from('debtors')
-        .insert([{ name, user_id: DUMMY_USER_ID }]);
+        .insert([{ name, user_id: user.id }]);
 
       if (error) throw error;
       await fetchDebtors();
     } catch (err) {
       console.error('Error adding debtor:', err);
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -94,7 +110,7 @@ const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error adding debt:', err);
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -113,7 +129,7 @@ const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error adding payment:', err);
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -128,11 +144,11 @@ const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error deleting debtor:', err);
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
-  const deleteDebt = async (_debtorId: string, debtId: string) => {
+  const deleteDebt = async (debtorId: string, debtId: string) => {
     try {
       const { error } = await supabase
         .from('debts')
@@ -143,11 +159,11 @@ const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error deleting debt:', err);
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
-  const deletePayment = async (_debtorId: string, paymentId: string) => {
+  const deletePayment = async (debtorId: string, paymentId: string) => {
     try {
       const { error } = await supabase
         .from('payments')
@@ -158,7 +174,7 @@ const useSupabaseDebt = () => {
       await fetchDebtors();
     } catch (err) {
       console.error('Error deleting payment:', err);
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -175,4 +191,3 @@ const useSupabaseDebt = () => {
     refreshData: fetchDebtors,
   };
 };
-                  
