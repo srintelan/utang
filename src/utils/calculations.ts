@@ -54,3 +54,13 @@ export const formatDate = (dateString: string): string => {
     minute: '2-digit',
   }).format(date);
 };
+
+export const formatDateLong = (dateString: string): string => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+};
