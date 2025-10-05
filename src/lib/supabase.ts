@@ -2,8 +2,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Ganti dengan URL dan Anon Key Supabase Anda
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://iivfobacquzfbxesxffn.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdmZvYmFjcXV6ZmJ4ZXN4ZmZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NjkxMTksImV4cCI6MjA3NTI0NTExOX0.romQs2uPwVBlUqnLua5GxhjGmYowaxHWMR-9mg1l0XY';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
