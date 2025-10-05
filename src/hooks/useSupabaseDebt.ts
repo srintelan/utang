@@ -56,8 +56,9 @@ export const useSupabaseDebt = () => {
           .filter(debt => debt.debtor_id === debtor.id)
           .map(debt => ({
             id: debt.id,
-            description: debt.description,
-            amount: Number(debt.amount),
+            description: debt.description || '',
+            amount: Number(debt.amount) || 0,
+            date: debt.date || debt.created_at || new Date().toISOString(),
           })),
         payments: (paymentsData || [])
           .filter(payment => payment.debtor_id === debtor.id)
@@ -100,7 +101,12 @@ export const useSupabaseDebt = () => {
     try {
       const { error } = await supabase
         .from('debts')
-        .insert([{ debtor_id: debtorId, description, amount }]);
+        .insert([{ 
+          debtor_id: debtorId, 
+          description, 
+          amount,
+          date: new Date().toISOString()
+        }]);
 
       if (error) throw error;
       await fetchDebtors();
