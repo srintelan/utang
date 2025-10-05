@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Trash2, Plus } from 'lucide-react';
+import { ChevronDown, ChevronUp, Trash2, Plus, Calendar } from 'lucide-react';
 import { Debtor } from '../types/debt';
-import { calculateTotalDebt, calculateTotalPayments, calculateRemainingDebt, calculatePaymentPercentage, formatCurrency, formatDate } from '../utils/calculations';
+import { calculateTotalDebt, calculateTotalPayments, calculateRemainingDebt, calculatePaymentPercentage, formatCurrency, formatDate, formatDateLong } from '../utils/calculations';
 
 interface DebtorCardProps {
   debtor: Debtor;
@@ -206,18 +206,23 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
               ) : (
                 <div className="space-y-2">
                   {debtor.debts.map((debt) => (
-                    <div key={debt.id} className="flex justify-between items-center bg-red-50 p-2 rounded text-sm">
-                      <div>
-                        <p className="font-medium text-gray-800">{debt.description}</p>
-                        <p className="text-red-600 font-semibold">{formatCurrency(debt.amount)}</p>
-                        
+                    <div key={debt.id} className="bg-red-50 p-3 rounded border border-red-100">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-800">{debt.description}</p>
+                          <p className="text-red-600 font-semibold text-lg">{formatCurrency(debt.amount)}</p>
+                        </div>
+                        <button
+                          onClick={() => onDeleteDebt(debtor.id, debt.id)}
+                          className="text-red-500 hover:text-red-700 ml-2"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </div>
-                      <button
-                        onClick={() => onDeleteDebt(debtor.id, debt.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex items-center gap-1 text-xs text-gray-600">
+                        <Calendar size={12} />
+                        <span>{formatDateLong(debt.date)}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -231,18 +236,23 @@ export const DebtorCard = ({ debtor, onAddDebt, onAddPayment, onDeleteDebtor, on
               ) : (
                 <div className="space-y-2">
                   {debtor.payments.map((payment) => (
-                    <div key={payment.id} className="flex justify-between items-center bg-green-50 p-2 rounded text-sm">
-                      <div>
-                        <p className="text-green-600 font-semibold">{formatCurrency(payment.amount)}</p>
-                        <p className="text-xs text-gray-600">{formatDate(payment.date)}</p>
-                        {payment.notes && <p className="text-xs text-gray-500 italic">{payment.notes}</p>}
+                    <div key={payment.id} className="bg-green-50 p-3 rounded border border-green-100">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <p className="text-green-600 font-semibold text-lg">{formatCurrency(payment.amount)}</p>
+                          {payment.notes && <p className="text-xs text-gray-600 italic mt-1">{payment.notes}</p>}
+                        </div>
+                        <button
+                          onClick={() => onDeletePayment(debtor.id, payment.id)}
+                          className="text-red-500 hover:text-red-700 ml-2"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </div>
-                      <button
-                        onClick={() => onDeletePayment(debtor.id, payment.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex items-center gap-1 text-xs text-gray-600">
+                        <Calendar size={12} />
+                        <span>{formatDateLong(payment.date)}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
