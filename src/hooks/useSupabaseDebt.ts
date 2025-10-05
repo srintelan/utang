@@ -1,23 +1,13 @@
-// src/hooks/useSupabaseDebt.ts
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { Debtor } from '../types/debt';
-
-// Dummy user ID untuk testing tanpa authentication
-const DUMMY_USER_ID = 'default_user';
-
-export const useSupabaseDebt = () => {
+const useSupabaseDebt = () => {
   const [debtors, setDebtors] = useState<Debtor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch all debtors with their debts and payments
   const fetchDebtors = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch debtors
       const { data: debtorsData, error: debtorsError } = await supabase
         .from('debtors')
         .select('*')
@@ -31,7 +21,6 @@ export const useSupabaseDebt = () => {
         return;
       }
 
-      // Fetch all debts
       const { data: debtsData, error: debtsError } = await supabase
         .from('debts')
         .select('*')
@@ -39,7 +28,6 @@ export const useSupabaseDebt = () => {
 
       if (debtsError) throw debtsError;
 
-      // Fetch all payments
       const { data: paymentsData, error: paymentsError } = await supabase
         .from('payments')
         .select('*')
@@ -47,7 +35,6 @@ export const useSupabaseDebt = () => {
 
       if (paymentsError) throw paymentsError;
 
-      // Combine data
       const combinedDebtors: Debtor[] = debtorsData.map(debtor => ({
         id: debtor.id,
         name: debtor.name,
@@ -58,6 +45,7 @@ export const useSupabaseDebt = () => {
             id: debt.id,
             description: debt.description,
             amount: Number(debt.amount),
+            createdAt: debt.created_at,
           })),
         payments: (paymentsData || [])
           .filter(payment => payment.debtor_id === debtor.id)
@@ -187,3 +175,4 @@ export const useSupabaseDebt = () => {
     refreshData: fetchDebtors,
   };
 };
+                  
