@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FileText } from 'lucide-react';
-import { useDebtStorage } from './hooks/useDebtStorage';
+import { useSupabaseDebt } from './hooks/useSupabaseDebt';
 import { calculateGlobalStats } from './utils/calculations';
 import { StatisticsPanel } from './components/StatisticsPanel';
 import { AddDebtorForm } from './components/AddDebtorForm';
@@ -15,7 +15,9 @@ function App() {
     deleteDebtor,
     deleteDebt,
     deletePayment,
-  } = useDebtStorage();
+  } = useSupabaseDebt();
+
+  
 
   const [searchTerm, setSearchTerm] = useState('');
 
