@@ -9,7 +9,6 @@ import { DebtorCard } from './components/DebtorCard';
 function App() {
   const {
     debtors,
-    loading,
     addDebtor,
     addDebt,
     addPayment,
@@ -25,17 +24,6 @@ function App() {
   const filteredDebtors = debtors.filter(debtor =>
     debtor.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Memuat data...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -97,7 +85,7 @@ function App() {
         )}
 
         <div className="mt-8 text-center text-sm text-gray-500">
-          <p>Data disimpan di Supabase Database</p>
+          <p>Data disimpan secara lokal di browser Anda</p>
         </div>
       </div>
     </div>
