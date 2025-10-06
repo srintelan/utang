@@ -64,3 +64,20 @@ export const formatDateLong = (dateString: string): string => {
     year: 'numeric',
   }).format(date);
 };
+
+// FORMAT 4: Sangat Detail dengan Timezone
+// Output: "Senin, 7 Oktober 2025 pukul 15.30.45 WIB"
+export const formatDateVeryLong = (dateString: string): string => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZoneName: 'short',
+    hour12: false,
+  }).format(date);
+};
