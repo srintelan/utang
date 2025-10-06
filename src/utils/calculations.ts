@@ -55,7 +55,7 @@ export const formatDate = (dateString: string): string => {
   }).format(date);
 };
 
-export const formatDateLong = (dateString: string): string => {
+export const formatDateVeryLong = (dateString: string): string => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('id-ID', {
     weekday: 'long',
@@ -67,7 +67,7 @@ export const formatDateLong = (dateString: string): string => {
 
 // FORMAT 4: Sangat Detail dengan Timezone
 // Output: "Senin, 7 Oktober 2025 pukul 15.30.45 WIB"
-export const formatDateVeryLong = (dateString: string): string => {
+export const formatDateLong = (dateString: string): string => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('id-ID', {
     weekday: 'long',
