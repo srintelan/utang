@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { FileText, RefreshCw, AlertCircle } from 'lucide-react';
+import { FileText, RefreshCw, AlertCircle, Download } from 'lucide-react';
 import { useSupabaseDebt } from './hooks/useSupabaseDebt';
 import { calculateGlobalStats } from './utils/calculations';
+import { exportToExcel } from './utils/exportToExcel';
 import { StatisticsPanel } from './components/StatisticsPanel';
 import { AddDebtorForm } from './components/AddDebtorForm';
 import { DebtorCard } from './components/DebtorCard';
@@ -83,6 +84,15 @@ function App() {
                 placeholder="Cari debitur..."
                 className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
               />
+              <button
+                onClick={() => exportToExcel(debtors)}
+                className="px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center gap-2 shadow-md"
+                title="Ekspor ke Excel"
+                disabled={debtors.length === 0}
+              >
+                <Download size={20} />
+                <span className="hidden sm:inline font-medium">Ekspor Excel</span>
+              </button>
               <button
                 onClick={refreshData}
                 className="px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2"
